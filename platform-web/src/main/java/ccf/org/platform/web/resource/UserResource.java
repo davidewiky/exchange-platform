@@ -36,7 +36,7 @@ public class UserResource extends AbstractResource<User, AbstractDTO> {
 		try {
 			final Payload payload = manageUserEJB.googleSignInVerifier(idToken);
 			if (payload != null) {
-				
+
 				final User user = new User();
 				user.setName((String) payload.get("given_name"));
 				manageUserEJB.persist(user);
@@ -48,16 +48,17 @@ public class UserResource extends AbstractResource<User, AbstractDTO> {
 
 		return added;
 	}
-	
+
 	@GET
 	@Path("/loggin/{email}")
 	@Produces(MediaType.APPLICATION_JSON)
 	//@Produces(MediaType.TEXT_HTML)
 	public User get(@PathParam("email") String email) throws DatabaseException {
-		final User example = new User();
-		example.setEmail(email);
 		final User user = manageUserEJB.load(User.class, User_.email, email);
-		return user;
+		if(user != null)
+			return user; 
+		else
+			return null;
 	}
 
 }
