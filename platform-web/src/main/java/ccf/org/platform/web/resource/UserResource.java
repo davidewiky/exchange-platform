@@ -3,12 +3,13 @@ package ccf.org.platform.web.resource;
 import ccf.org.platform.logic.exception.DatabaseException;
 import ccf.org.platform.logic.service.ManageUserEJB;
 import ccf.org.platform.model.core.User;
+import ccf.org.platform.model.core.User_;
 import ccf.org.platform.web.dto.AbstractDTO;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 
 import javax.ejb.EJB;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -46,6 +47,17 @@ public class UserResource extends AbstractResource<User, AbstractDTO> {
 		}
 
 		return added;
+	}
+	
+	@GET
+	@Path("/loggin/{email}")
+	@Produces(MediaType.APPLICATION_JSON)
+	//@Produces(MediaType.TEXT_HTML)
+	public User get(@PathParam("email") String email) throws DatabaseException {
+		final User example = new User();
+		example.setEmail(email);
+		final User user = manageUserEJB.load(User.class, User_.email, email);
+		return user;
 	}
 
 }
